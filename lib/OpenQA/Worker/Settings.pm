@@ -76,6 +76,9 @@ sub new ($class, $instance_number = undef, $cli_options = {}) {
     $global_settings{RETRY_DELAY} //= 5;
     $global_settings{RETRY_DELAY_IF_WEBUI_BUSY} //= ONE_MINUTE;
 
+    # liveviewhandler is supposed to run on web UI port + 2
+    $global_settings{SERVICE_PORT_DELTA} //= 2;
+
     my $self = $class->SUPER::new(
         global_settings => \%global_settings,
         webui_hosts => \@hosts,

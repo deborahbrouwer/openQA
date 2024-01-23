@@ -964,9 +964,11 @@ sub post_upload_progress_to_liveviewhandler {
     $self->{_progress_info} = \%new_progress_info;
 
     my $job_id = $self->id;
+    my $global_settings = OpenQA::Worker::Settings->new->global_settings;
+
     $self->client->send(
         post => "/liveviewhandler/api/v1/jobs/$job_id/upload_progress",
-        service_port_delta => 2,    # liveviewhandler is supposed to run on web UI port + 2
+        service_port_delta => $global_settings->{SERVICE_PORT_DELTA},
         json => \%new_progress_info,
         non_critical => 1,
         callback => sub {
