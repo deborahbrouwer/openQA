@@ -63,7 +63,7 @@ else
     curl -s https://raw.githubusercontent.com/os-autoinst/openQA/master/script/configure-web-proxy | bash -ex -s -- "$proxy_args"
 fi
 sed -i -e 's/#*.*method.*=.*$/method = Fake/' /etc/openqa/openqa.ini
-
+sed -i '/#parallel_children_collapsable_results = passed softfailed/a service_port_delta = 0' /etc/openqa/openqa.ini
 
 if [ -z "$skip_suse_specifics" ] && ping -c1 download.suse.de. && (! rpm -q ca-certificates-suse) ; then
     # add internal CA if executed within suse network
@@ -150,6 +150,12 @@ key = ${API_KEY}
 secret = ${API_SECRET}
 EOF
 
+# Set WORKER_HOSTNAME expressly to avoid it defaulting to the
+# container id if run in a container.
+cat >> /etc/openqa/workers.ini <<EOF
+SERVICE_PORT_DELTA = 0
+WORKER_HOSTNAME = 127.0.0.1
+EOF
 
 # start worker
 if [ -z "$running_systemd" ]; then
